@@ -1,4 +1,4 @@
-package me.archdev.restapi.utils
+package com.oef.movies.utils
 
 import org.flywaydb.core.Flyway
 
