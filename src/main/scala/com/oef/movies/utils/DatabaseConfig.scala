@@ -1,4 +1,4 @@
-package me.archdev.restapi.utils
+package com.oef.movies.utils
 
 trait DatabaseConfig {
   val driver = slick.driver.PostgresDriver
