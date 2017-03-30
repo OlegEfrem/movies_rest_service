@@ -8,7 +8,7 @@ import com.oef.movies.http.HttpService
 import com.oef.movies.utils.{ Config, Migration }
 import scala.concurrent.ExecutionContext
 
-object Main extends App with Config with HttpService with Migration {
+object Main extends App with HttpService with Config with Migration {
   private implicit val system = ActorSystem()
 
   override protected implicit val executor: ExecutionContext = system.dispatcher

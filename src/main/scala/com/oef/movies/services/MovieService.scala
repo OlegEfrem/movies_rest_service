@@ -1,7 +1,6 @@
 package com.oef.movies.services
 
 import com.oef.movies.models._
-
 import scala.concurrent.Future
 
 trait MovieService {

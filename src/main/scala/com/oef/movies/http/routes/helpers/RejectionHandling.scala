@@ -1,4 +1,4 @@
-package com.oef.movies.http.routes
+package com.oef.movies.http.routes.helpers
 
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
