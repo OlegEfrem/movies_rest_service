@@ -1,8 +1,9 @@
 package com.oef.movies.http.routes
 
+import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directive0
 import akka.http.scaladsl.server.Directives._
-import com.oef.movies.models.{MovieIdentification, MovieRegistration}
+import com.oef.movies.models.{ MovieIdentification, MovieRegistration }
 import com.oef.movies.services.MovieService
 import spray.json._
 
@@ -21,20 +22,23 @@ trait MovieServiceRoute extends MovieService with BaseServiceRoute {
           }
         }
       } ~
-      patch { //Reserve a seat at the movie
-        entity(as[MovieIdentification]) { movieIdentification =>
-          validateEquals(urlIdentifiers, movieIdentification) {
-            complete(
-              reserve(movieIdentification)
-                .map(res => JsObject("reservationResult" -> JsString(res.toString)))
-            )
+        patch { //Reserve a seat at the movie
+          entity(as[MovieIdentification]) { movieIdentification =>
+            validateEquals(urlIdentifiers, movieIdentification) {
+              complete(
+                reserve(movieIdentification)
+                  .map(res => JsObject("reservationResult" -> JsString(res.toString)))
+              )
+            }
+          }
+        } ~
+        get { //Retrieve information about the movie
+          val movieInfo = read(urlIdentifiers)
+          onSuccess(movieInfo) {
+            case Some(x) => complete(x.toJson)
+            case None => complete(NotFound, s"Could not find th movie identified by: $urlIdentifiers")
           }
         }
-      } ~
-      get { //Retrieve information about the movie
-        val movieInfo = read(urlIdentifiers)
-        complete(movieInfo.map(_.toJson))
-      }
     }
   }
 

@@ -7,7 +7,9 @@ trait HttpService extends MovieServiceRoute {
 
   val routes =
     pathPrefix("v1") {
-      movieRoutes
+      handleRejections(myRejectionHandler) {
+        movieRoutes
+      }
     }
 
 }
