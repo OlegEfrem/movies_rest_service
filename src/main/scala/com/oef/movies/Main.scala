@@ -1,11 +1,11 @@
 package com.oef.movies
 
 import akka.actor.ActorSystem
-import akka.event.{Logging, LoggingAdapter}
+import akka.event.{ Logging, LoggingAdapter }
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.oef.movies.http.HttpService
-import com.oef.movies.utils.{Config, Migration}
+import com.oef.movies.utils.{ Config, Migration }
 import scala.concurrent.ExecutionContext
 
 object Main extends App with Config with HttpService with Migration {
