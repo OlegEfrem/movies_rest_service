@@ -1,12 +1,28 @@
 package com.oef.movies.services
 
 import com.oef.movies.models._
+
 import scala.concurrent.Future
 
 trait MovieService {
-  def save(movieRegistration: MovieRegistration): Future[Unit] = Future.successful(())
+  def save(movieRegistration: MovieRegistration): Future[RegistrationResult.Value] = {
+    Future.successful(
+      movieRegistration match {
+        case MovieRegistration("existingMovie", _, _) => RegistrationResult.AlreadyExists
+        case _ => RegistrationResult.RegitrationSuccessful
+      }
+    )
+  }
 
-  def reserve(movieIdentification: MovieIdentification): Future[ReservationResult.Value] = Future.successful(ReservationResult.ReservationSuccessful)
+  def reserve(movieIdentification: MovieIdentification): Future[ReservationResult.Value] = {
+    Future.successful(
+      movieIdentification match {
+        case MovieIdentification("tt0111161", "screen_123456") => ReservationResult.ReservationSuccessful
+        case MovieIdentification("noSeatsLeft", _) => ReservationResult.NoSeatsLeft
+        case _ => ReservationResult.NoSuchMovie
+      }
+    )
+  }
 
   def read(movieIdentification: MovieIdentification): Future[Option[MovieInformation]] = {
     Future.successful(
