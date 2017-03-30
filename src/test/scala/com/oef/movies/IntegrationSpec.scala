@@ -6,7 +6,7 @@ import com.oef.movies.http.HttpService
 import com.oef.movies.utils.Migration
 import org.scalatest.{ Matchers, WordSpec }
 
-trait BaseServiceTest extends WordSpec with Matchers with ScalatestRouteTest with HttpService with Migration {
+trait IntegrationSpec extends BaseSpec with ScalatestRouteTest with HttpService with Migration {
   protected val log: LoggingAdapter = NoLogging
   reloadSchema()
 }

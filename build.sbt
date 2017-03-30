@@ -1,7 +1,11 @@
-name := "akka-http-rest"
-organization := "me.archdev"
+name := "movies"
+
+organization := "com.oef"
+
 version := "1.0.0"
+
 scalaVersion := "2.12.1"
+
 scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8")
 
 libraryDependencies ++= {
@@ -24,6 +28,8 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "test"
   )
 }
+
+lazy val root = project.in(file(".")).configs(IntegrationTest)
 
 // run scalastyle at compile time
 lazy val compileScalastyle = taskKey[Unit]("compileScalastyle")

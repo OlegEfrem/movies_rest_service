@@ -1,42 +1,18 @@
-package com.oef.movies
+package com.oef.movies.http
 
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ HttpEntity, MediaTypes }
-import org.scalatest.concurrent.ScalaFutures
+import com.oef.movies.IntegrationSpec
 import spray.json._
 
-class MovieServiceTest extends BaseServiceTest with ScalaFutures {
+class HttpServiceTest extends IntegrationSpec {
+
   import TestData._
 
-  "Movie service" should {
+  "registration" should {
+    val requestEntity = HttpEntity(MediaTypes.`application/json`, registrationJson)
 
-    s"return HTTP-$BadRequest for malformed path" in {
-      Get("/movies/") ~> movieRoutes ~> check {
-        status shouldBe NotFound
-      }
-    }
-
-    s"return HTTP-$MethodNotAllowed for non supported HTTP method" in {
-      Head(generalUrl()) ~> movieRoutes ~> check {
-        status shouldBe MethodNotAllowed
-        responseAs[String] shouldBe ""
-      }
-    }
-
-    s"return HTTP-$NotFound for not existing imdbId/screenId combination" in {
-      Get(generalUrl(imdbId = "NonExistingImdbId")) ~> movieRoutes ~> check {
-        status shouldBe NotFound
-        responseAs[String] shouldBe "Could not find th movie identified by: imdbId=NonExistingImdbId, screenId=screen_123456"
-      }
-    }
-
-  }
-
-  "register a movie" should {
-
-    "register a new movie successfully" in {
-
-      val requestEntity = HttpEntity(MediaTypes.`application/json`, registrationJson)
+    "register a new movie" in {
       Put(generalUrl(), requestEntity) ~> movieRoutes ~> check {
         response.status shouldBe OK
         responseAs[String] shouldBe "movie registered"
@@ -53,9 +29,9 @@ class MovieServiceTest extends BaseServiceTest with ScalaFutures {
 
   }
 
-  "reserve a seat at the movie" should {
+  "reservation" should {
 
-    "reserve a moovie for an existing movie" in {
+    "reserve an existing movie" in {
       val requestEntity = HttpEntity(MediaTypes.`application/json`, reservationJson)
       Patch(generalUrl(), requestEntity) ~> movieRoutes ~> check {
         response.status shouldBe OK
@@ -63,27 +39,35 @@ class MovieServiceTest extends BaseServiceTest with ScalaFutures {
       }
     }
 
-    s"return HTTP-$NotFound for non existing movie" in {
-
+    "fail validation if path and body resource identifiers differ" in {
+      pending
     }
 
-    "fail validation if path and body resource identifiers differ" in {
-
+    s"return HTTP-$NotFound for non existing movie/screen combination" in {
+      pending
     }
 
   }
 
-  "retrieve information about the movie" in {
+  "retrieval" should {
 
-    Get(generalUrl()) ~> movieRoutes ~> check {
-      response.status shouldBe OK
-      responseAs[JsValue] shouldBe retrieveJson
+    "return an existing movie's info" in {
+      Get(generalUrl()) ~> movieRoutes ~> check {
+        response.status shouldBe OK
+        responseAs[JsValue] shouldBe retrieveJson
+      }
     }
+
+    s"return HTTP-$NotFound for non existing movie/screen combination" in {
+      Get(generalUrl(imdbId = "NonExistingImdbId")) ~> movieRoutes ~> check {
+        status shouldBe NotFound
+        responseAs[String] shouldBe "Could not find th movie identified by: imdbId=NonExistingImdbId, screenId=screen_123456"
+      }
+    }
+
   }
 
   object TestData {
-    def generalUrl(imdbId: String = "tt0111161", screenId: String = "screen_123456") = s"/movies/imdbId/$imdbId/screenId/$screenId/"
-
     val registrationJson =
       """
         |{
@@ -92,7 +76,6 @@ class MovieServiceTest extends BaseServiceTest with ScalaFutures {
         |"screenId": "screen_123456"
         |}
         |""".stripMargin.parseJson.toString
-
     val reservationJson =
       """
         |{
@@ -100,7 +83,6 @@ class MovieServiceTest extends BaseServiceTest with ScalaFutures {
         |"screenId": "screen_123456"
         |}
         |""".stripMargin.parseJson.toString
-
     val retrieveJson =
       """
         |{
@@ -111,6 +93,8 @@ class MovieServiceTest extends BaseServiceTest with ScalaFutures {
         |"reservedSeats": 50
         |}
         |""".stripMargin.parseJson
+
+    def generalUrl(imdbId: String = "tt0111161", screenId: String = "screen_123456") = s"/movies/imdbId/$imdbId/screenId/$screenId/"
 
   }
 

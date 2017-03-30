@@ -3,11 +3,12 @@ package com.oef.movies.http.routes
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directive0
 import akka.http.scaladsl.server.Directives._
+import com.oef.movies.http.routes.helpers.RouteTemplate
 import com.oef.movies.models.{ MovieIdentification, MovieRegistration }
 import com.oef.movies.services.MovieService
 import spray.json._
 
-trait MovieServiceRoute extends MovieService with BaseServiceRoute {
+trait MovieServiceRoute extends MovieService with RouteTemplate {
 
   val movieRoutes = pathPrefix("movies" / "imdbId" / Segment / "screenId" / Segment) { (imdbId, screentId) =>
     val urlIdentifiers = MovieIdentification(imdbId, screentId)
