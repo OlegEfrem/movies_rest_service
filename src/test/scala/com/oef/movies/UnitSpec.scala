@@ -1,5 +1,3 @@
 package com.oef.movies
 
-trait UnitSpec extends BaseSpec {
-
-}
+trait UnitSpec extends BaseSpec
