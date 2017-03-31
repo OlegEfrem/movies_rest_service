@@ -1,12 +1,16 @@
 package com.oef.movies
 
-import akka.event.{ LoggingAdapter, NoLogging }
-import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.oef.movies.http.HttpService
 import com.oef.movies.utils.Migration
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.BeforeAndAfterAll
 
-trait IntegrationSpec extends BaseSpec with ScalatestRouteTest with HttpService with Migration {
-  protected val log: LoggingAdapter = NoLogging
-  reloadSchema()
+trait IntegrationSpec extends BaseSpec with Migration with BeforeAndAfterAll {
+
+  override protected def beforeAll() = {
+    reloadSchema()
+  }
+
+  override protected def afterAll() = {
+    reloadSchema()
+  }
+
 }

@@ -1,11 +1,11 @@
 package com.oef.movies.http
 
 import akka.http.scaladsl.model.StatusCodes._
-import akka.http.scaladsl.model.{HttpEntity, MediaTypes}
-import com.oef.movies.IntegrationSpec
+import akka.http.scaladsl.model.{ HttpEntity, MediaTypes }
+import com.oef.movies.ApiSpec
 import spray.json._
 
-class HttpServiceTest extends IntegrationSpec {
+class HttpServiceTest extends ApiSpec {
 
   import TestData._
 
@@ -51,7 +51,7 @@ class HttpServiceTest extends IntegrationSpec {
         response.status shouldBe Forbidden
         responseAs[String] shouldBe
           "validation failed: resource identifiers from the path [imdbId=differentImdb, screenId=screen_123456] " +
-            "and the body: [imdbId=tt0111161, screenId=screen_123456] do not match"
+          "and the body: [imdbId=tt0111161, screenId=screen_123456] do not match"
       }
     }
 
@@ -90,7 +90,7 @@ class HttpServiceTest extends IntegrationSpec {
         response.status shouldBe Forbidden
         responseAs[String] shouldBe
           "validation failed: resource identifiers from the path [imdbId=differentImdb, screenId=screen_123456] " +
-            "and the body: [imdbId=tt0111161, screenId=screen_123456] do not match"
+          "and the body: [imdbId=tt0111161, screenId=screen_123456] do not match"
       }
     }
 
