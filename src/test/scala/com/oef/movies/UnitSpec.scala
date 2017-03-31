@@ -1,3 +1,5 @@
 package com.oef.movies
 
-trait UnitSpec extends BaseSpec
+import org.scalamock.scalatest.MockFactory
+
+trait UnitSpec extends BaseSpec with MockFactory

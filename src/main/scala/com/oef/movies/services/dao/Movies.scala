@@ -15,7 +15,7 @@ private[services] trait MoviesDao {
   def update(movieInformation: MovieInformation): Future[Unit]
 }
 
-private[services] object MoviesDao {
+object MoviesDao {
   def apply()(implicit executionContext: ExecutionContext): MoviesDao = new MoviesDaoImpl()
 }
 

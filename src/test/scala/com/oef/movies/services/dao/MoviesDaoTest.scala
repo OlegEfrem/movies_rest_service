@@ -1,15 +1,12 @@
 package com.oef.movies.services.dao
 
 import com.oef.movies.IntegrationSpec
-import com.oef.movies.models.MovieInformation
+import org.postgresql.util.PSQLException
 import org.scalatest.BeforeAndAfterEach
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.Random
 
 class MoviesDaoTest extends IntegrationSpec with BeforeAndAfterEach {
   private val dao = MoviesDao()
-
-  import TestData._
 
   "create" should {
 
@@ -24,6 +21,8 @@ class MoviesDaoTest extends IntegrationSpec with BeforeAndAfterEach {
       val info = movieInfo()
       dao.create(info).futureValue
       whenReady(dao.create(info).failed) { e =>
+        e shouldBe a[PSQLException]
+        println(e.printStackTrace())
         e should have message
           """ERROR: duplicate key value violates unique constraint "movies_pkey"
             |  Detail: Key (imdb_id, screen_id)=(someImdbId, someScreenId) already exists.""".stripMargin
@@ -64,17 +63,4 @@ class MoviesDaoTest extends IntegrationSpec with BeforeAndAfterEach {
 
   }
 
-  private def randomMovieInfo() = movieInfo(Random.nextString(5))
-
-}
-
-object TestData {
-  def movieInfo(imdbId: String = "someImdbId", screenId: String = "someScreenId"): MovieInformation =
-    MovieInformation(
-      imdbId = imdbId,
-      screenId = screenId,
-      movieTitle = "",
-      availableSeats = 100,
-      reservedSeats = 0
-    )
 }
