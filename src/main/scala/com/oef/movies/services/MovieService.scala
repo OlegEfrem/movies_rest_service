@@ -1,42 +1,55 @@
 package com.oef.movies.services
 
 import com.oef.movies.models._
+import com.oef.movies.services.dao.MoviesDao
+import org.postgresql.util.PSQLException
 
-import scala.concurrent.Future
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MovieService {
-  def save(movieRegistration: MovieRegistration): Future[RegistrationResult.Value] = {
-    Future.successful(
-      movieRegistration match {
-        case MovieRegistration("existingMovie", _, _) => RegistrationResult.AlreadyExists
-        case _ => RegistrationResult.RegitrationSuccessful
-      }
-    )
+
+  def save(movieRegistration: MovieRegistration): Future[RegistrationResult.Value]
+
+  def reserve(movieIdentification: MovieIdentification): Future[ReservationResult.Value]
+
+  def read(movieIdentification: MovieIdentification): Future[Option[MovieInformation]]
+
+}
+
+object MovieService {
+  def apply()(implicit executionContext: ExecutionContext): MovieService = new MovieServiceImpl(MoviesDao(), ImdbService())
+}
+
+class MovieServiceImpl(dao: MoviesDao, imdbService: ImdbService)(implicit executionContext: ExecutionContext) extends MovieService {
+
+  override def save(movieRegistration: MovieRegistration): Future[RegistrationResult.Value] = {
+    val saveResult =
+      for {
+        movieTitle <- imdbService.movieTitleById(movieRegistration.imdbId)
+        movieInfo = new MovieInformation(movieRegistration, movieTitle)
+        result <- dao.create(movieInfo)
+      } yield result
+    saveResult.map(_ => RegistrationResult.RegitrationSuccessful) recover {
+      case e: PSQLException if e.getMessage.contains(Identifiers.primaryKeyViolation) =>
+        RegistrationResult.AlreadyExists
+    }
   }
 
-  def reserve(movieIdentification: MovieIdentification): Future[ReservationResult.Value] = {
-    Future.successful(
-      movieIdentification match {
-        case MovieIdentification("tt0111161", "screen_123456") => ReservationResult.ReservationSuccessful
-        case MovieIdentification("noSeatsLeft", _) => ReservationResult.NoSeatsLeft
-        case _ => ReservationResult.NoSuchMovie
-      }
-    )
+  override def reserve(movieIdentification: MovieIdentification): Future[ReservationResult.Value] = {
+    val existingMovie = read(movieIdentification)
+    existingMovie flatMap {
+      case Some(x) =>
+        if (x.reservedSeats < x.availableSeats)
+          dao.update(x.reserveOneSeat()).map(_ => ReservationResult.ReservationSuccessful)
+        else
+          Future.successful(ReservationResult.NoSeatsLeft)
+      case None =>
+        Future.successful(ReservationResult.NoSuchMovie)
+    }
   }
 
-  def read(movieIdentification: MovieIdentification): Future[Option[MovieInformation]] = {
-    Future.successful(
-      movieIdentification match {
-        case MovieIdentification("tt0111161", "screen_123456") =>
-          Some(MovieInformation(
-            imdbId = "tt0111161",
-            screenId = "screen_123456",
-            movieTitle = "The Shawshank Redemption",
-            availableSeats = 100,
-            reservedSeats = 50
-          ))
-        case _ => None
-      }
-    )
+  override def read(movieIdentification: MovieIdentification): Future[Option[MovieInformation]] = {
+    dao.read(movieIdentification)
   }
+
 }

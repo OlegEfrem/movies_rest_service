@@ -20,6 +20,13 @@ object ReservationResult extends Enumeration {
 }
 
 case class MovieInformation(imdbId: String, screenId: String, movieTitle: String, availableSeats: Int, reservedSeats: Int) extends MovieId(imdbId, screenId) {
+
+  def this(movieRegistration: MovieRegistration, movieTitle: String) =
+    this(movieRegistration.imdbId, movieRegistration.screenId, movieTitle, movieRegistration.availableSeats, 0)
+
   def reserveOneSeat(): MovieInformation =
     MovieInformation(imdbId, screenId, movieTitle, availableSeats, reservedSeats = reservedSeats + 1)
+
+  @transient lazy val movieRegistration: MovieRegistration = MovieRegistration(imdbId, availableSeats, screenId)
+
 }
