@@ -8,7 +8,8 @@ trait RejectionHandling {
 
   def myRejectionHandler: RejectionHandler =
     RejectionHandler.newBuilder()
-      .handle{ case ValidationRejection(msg, _) =>
+      .handle {
+        case ValidationRejection(msg, _) =>
           complete((Forbidden, s"validation failed: $msg"))
       }
       .handleAll[MethodRejection] { methodRejections =>

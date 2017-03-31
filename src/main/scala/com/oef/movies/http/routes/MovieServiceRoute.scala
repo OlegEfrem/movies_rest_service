@@ -2,9 +2,9 @@ package com.oef.movies.http.routes
 
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{Directive0, StandardRoute}
+import akka.http.scaladsl.server.{ Directive0, StandardRoute }
 import com.oef.movies.http.routes.helpers.RouteContext
-import com.oef.movies.models.{MovieIdentification, MovieRegistration}
+import com.oef.movies.models.{ MovieIdentification, MovieRegistration }
 import com.oef.movies.services.MovieService
 import spray.json._
 
