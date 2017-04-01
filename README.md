@@ -29,12 +29,12 @@ step-by-step: [https://www.typesafe.com/activator/template/akka-http-rest](https
 
 ## Configuration
 * Create database in PostgresSQL 
-* Set database settings on application config or set enviroment variables
+* Set database settings on application config or set environment variables
 
 ### Changing application config
 There are two config files. Application config `src/main/resources/application.conf` and test config `src/test/resources/application.conf`.
 
-### Enviroment variables
+### Environment variables
 - `PSQL_URL` || `PSQL_TEST_URL` - database url by scheme `jdbc:postgresql://host:port/database-name`
 - `PSQL_USER` || `PSQL_TEST_USER` - database user
 - `PSQL_PASSWORD` || `PSQL_TEST_PASSWORD` - database password
