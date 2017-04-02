@@ -24,9 +24,10 @@ libraryDependencies ++= {
     "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
     "org.flywaydb" % "flyway-core" % "3.2.1",
 
-    "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
-    "org.scalamock" %% "scalamock-scalatest-support" % scalaMockV % "test",
-    "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "test"
+    "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
+    "org.scalamock" %% "scalamock-scalatest-support" % scalaMockV % Test,
+    "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
+    "com.h2database" % "h2" % "1.4.194" % Test
   )
 }
 

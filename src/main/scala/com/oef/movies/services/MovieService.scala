@@ -4,7 +4,6 @@ import com.oef.movies.models._
 import com.oef.movies.services.dao.MoviesDao
 import com.oef.movies.services.external.ImdbService
 import com.oef.movies.utils.ActorContext
-import org.postgresql.util.PSQLException
 
 import scala.concurrent.Future
 
@@ -25,15 +24,19 @@ object MovieService {
 class MovieServiceImpl(dao: MoviesDao, imdbService: ImdbService) extends MovieService with ActorContext {
 
   override def save(movieRegistration: MovieRegistration): Future[RegistrationResult.Value] = {
-    val saveResult =
+    val existingMovie = read(movieRegistration.movieIdentification)
+
+    def save =
       for {
         movieTitle <- imdbService.movieTitleById(movieRegistration.imdbId)
         movieInfo = new MovieInformation(movieRegistration, movieTitle)
-        result <- dao.create(movieInfo)
-      } yield result
-    saveResult.map(_ => RegistrationResult.RegitrationSuccessful) recover {
-      case e: PSQLException if e.getMessage.contains(Identifiers.primaryKeyViolation) =>
-        RegistrationResult.AlreadyExists
+        _ <- dao.create(movieInfo)
+      } yield RegistrationResult.RegitrationSuccessful
+
+    existingMovie flatMap {
+      case Some(x) => Future.successful(RegistrationResult.AlreadyExists)
+      case None => save
+
     }
   }
 

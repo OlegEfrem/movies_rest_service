@@ -1,7 +1,8 @@
 package com.oef.movies.services.dao
 
+import java.sql.SQLException
+
 import com.oef.movies.IntegrationSpec
-import org.postgresql.util.PSQLException
 import org.scalatest.BeforeAndAfterEach
 
 class MoviesDaoTest extends IntegrationSpec with BeforeAndAfterEach {
@@ -19,10 +20,8 @@ class MoviesDaoTest extends IntegrationSpec with BeforeAndAfterEach {
       val info = movieInfo()
       dao.create(info).futureValue
       whenReady(dao.create(info).failed) { e =>
-        e shouldBe a[PSQLException]
-        e should have message
-          s"""ERROR: duplicate key value violates unique constraint "movies_pkey"
-             |  Detail: Key (imdb_id, screen_id)=(${info.imdbId}, ${info.screenId}) already exists.""".stripMargin
+        e shouldBe a[SQLException]
+        //e.asInstanceOf[SQLException].getErrorCode shouldBe Identifiers.primaryKeyViolationCode works on H2, doesn't on Postgresql
       }
     }
 
@@ -48,7 +47,9 @@ class MoviesDaoTest extends IntegrationSpec with BeforeAndAfterEach {
     "update an existing entry reserving a seat" in {
       val info = movieInfo()
       dao.create(info).futureValue
+
       def dbInfo = dao.read(info.movieIdentification).futureValue.value
+
       dbInfo.reservedSeats shouldBe 0
       dao.update(info.reserveOneSeat()).futureValue
       dbInfo.reservedSeats shouldBe 1
