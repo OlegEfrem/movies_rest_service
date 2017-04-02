@@ -20,7 +20,6 @@ class MoviesDaoTest extends IntegrationSpec with BeforeAndAfterEach {
       dao.create(info).futureValue
       whenReady(dao.create(info).failed) { e =>
         e shouldBe a[PSQLException]
-        println(e.printStackTrace())
         e should have message
           s"""ERROR: duplicate key value violates unique constraint "movies_pkey"
              |  Detail: Key (imdb_id, screen_id)=(${info.imdbId}, ${info.screenId}) already exists.""".stripMargin

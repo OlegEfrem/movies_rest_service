@@ -18,7 +18,7 @@ class MovieServiceTest extends UnitSpec {
       service.read(existingMovie.movieIdentification).futureValue.value shouldBe existingMovie
     }
 
-    "return NONE for not existing entry" in new TestFixture {
+    "return NONE for a non existing entry" in new TestFixture {
       service.read(nonExistingMovie.movieIdentification).futureValue shouldBe None
     }
 
@@ -30,7 +30,7 @@ class MovieServiceTest extends UnitSpec {
       service.save(nonExistingMovie.movieRegistration).futureValue shouldBe RegitrationSuccessful
     }
 
-    s"return $AlreadyExists for existing entry" in new TestFixture {
+    s"return $AlreadyExists for an existing entry" in new TestFixture {
       service.save(existingMovie.movieRegistration).futureValue shouldBe AlreadyExists
     }
 
@@ -38,15 +38,15 @@ class MovieServiceTest extends UnitSpec {
 
   "reserve" should {
     import ReservationResult._
-    s" return $ReservationSuccessful for existing entry with available seats" in new TestFixture {
+    s"return $ReservationSuccessful for an existing entry with available seats" in new TestFixture {
       service.reserve(existingMovie.movieIdentification).futureValue shouldBe ReservationSuccessful
     }
 
-    s" return $NoSeatsLeft for existing entry with no available seats" in new TestFixture {
+    s"return $NoSeatsLeft for an existing entry with no available seats" in new TestFixture {
       service.reserve(noSeatsLeftMovie.movieIdentification).futureValue shouldBe NoSeatsLeft
     }
 
-    s" return ${ReservationResult.NoSuchMovie} for not existing entry" in new TestFixture {
+    s"return ${ReservationResult.NoSuchMovie} for a non existing entry" in new TestFixture {
       service.reserve(nonExistingMovie.movieIdentification).futureValue shouldBe NoSuchMovie
     }
 

@@ -19,7 +19,7 @@ libraryDependencies ++= {
 
     "com.typesafe.slick" %% "slick" % slickVersion,
     "com.typesafe.slick" %% "slick-hikaricp" % slickVersion,
-    "org.slf4j" % "slf4j-nop" % "1.6.4",
+    "org.slf4j" % "slf4j-nop" % "1.7.25",
     "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
     "org.flywaydb" % "flyway-core" % "3.2.1",
 

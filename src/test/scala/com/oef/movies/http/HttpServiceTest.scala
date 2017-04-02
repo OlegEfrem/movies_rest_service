@@ -12,16 +12,16 @@ class HttpServiceTest extends ApiSpec with Protocol {
 
   import TestData._
 
-  "Movie service" should {
+  "service" should {
 
-    s"return HTTP-$NotFound for non existing path" in {
+    s"respond with HTTP-$NotFound for a non existing path" in {
       Get("/non/existing/") ~> httpService.routes ~> check {
         status shouldBe NotFound
         responseAs[String] shouldBe "The path you requested [/non/existing/] does not exist."
       }
     }
 
-    s"return HTTP-$MethodNotAllowed for non supported HTTP method" in {
+    s"respond with HTTP-$MethodNotAllowed for a non supported HTTP method" in {
       Head(generalUrl()) ~> httpService.routes ~> check {
         status shouldBe MethodNotAllowed
         responseAs[String] shouldBe "Not supported method! Supported methods are: PUT, PATCH, GET!"
@@ -31,7 +31,7 @@ class HttpServiceTest extends ApiSpec with Protocol {
   }
 
   "registration" should {
-    "register a new movie" in {
+    s"respond with HTTP-$OK when registering a new movie" in {
       val movieRegistration = movieInfo().movieRegistration
       val requestEntity = HttpEntity(MediaTypes.`application/json`, registrationJson(movieRegistration).toString)
       Put(generalUrl(movieRegistration.movieIdentification), requestEntity) ~> httpService.routes ~> check {
@@ -40,7 +40,7 @@ class HttpServiceTest extends ApiSpec with Protocol {
       }
     }
 
-    "reject registering an existing movie" in {
+    s"respond with HTTP-$Conflict when trying to register an existing movie" in {
       val existingMovie = movieInfo()
       dao.create(existingMovie)
       val requestEntity = HttpEntity(MediaTypes.`application/json`, registrationJson(existingMovie.movieRegistration))
@@ -50,7 +50,7 @@ class HttpServiceTest extends ApiSpec with Protocol {
       }
     }
 
-    "fail validation if path and body resource identifiers differ" in {
+    s"respond with HTTP-$Forbidden failing validation if path and body resource identifiers are different" in {
       val pathIdentifiers = movieInfo().movieIdentification
       val bodyRegistration = movieInfo().movieRegistration
       val requestEntity = HttpEntity(MediaTypes.`application/json`, registrationJson(bodyRegistration))
@@ -66,7 +66,7 @@ class HttpServiceTest extends ApiSpec with Protocol {
 
   "reservation" should {
 
-    "reserve an existing movie" in {
+    s"respond with HTTP-$OK when reserving an existing movie" in {
       val existingMovie = movieInfo()
       dao.create(existingMovie)
       val requestEntity = HttpEntity(MediaTypes.`application/json`, reservationJson(existingMovie.movieIdentification))
@@ -76,7 +76,7 @@ class HttpServiceTest extends ApiSpec with Protocol {
       }
     }
 
-    s"return HTTP-$Conflict if no seats left" in {
+    s"respond with HTTP-$Conflict if no seats left" in {
       val existingMovie = movieInfo(availableSeats = 50, reserverdSeats = 50)
       dao.create(existingMovie)
       val requestEntity = HttpEntity(MediaTypes.`application/json`, reservationJson(existingMovie.movieIdentification))
@@ -86,7 +86,7 @@ class HttpServiceTest extends ApiSpec with Protocol {
       }
     }
 
-    s"return HTTP-$NotFound for non existing movie/screen combination" in {
+    s"respond with HTTP-$NotFound for a non existing movie/screen combination" in {
       val notExistingId = movieInfo().movieIdentification
       val requestEntity = HttpEntity(MediaTypes.`application/json`, reservationJson(notExistingId))
       Patch(generalUrl(notExistingId), requestEntity) ~> httpService.routes ~> check {
@@ -95,7 +95,7 @@ class HttpServiceTest extends ApiSpec with Protocol {
       }
     }
 
-    "fail validation if path and body resource identifiers differ" in {
+    s"respond with HTTP-$Forbidden failing validation if path and body resource identifiers are different" in {
       val pathIdentifiers = movieInfo().movieIdentification
       val bodyIdentifiers = movieInfo().movieIdentification
       val requestEntity = HttpEntity(MediaTypes.`application/json`, reservationJson(bodyIdentifiers))
@@ -111,7 +111,7 @@ class HttpServiceTest extends ApiSpec with Protocol {
 
   "retrieval" should {
 
-    "return an existing movie's info" in {
+    s"respond with HTTP-$OK for an existing movie" in {
       val existingMovie = movieInfo()
       dao.create(existingMovie)
       Get(generalUrl(existingMovie.movieIdentification)) ~> httpService.routes ~> check {
@@ -120,7 +120,7 @@ class HttpServiceTest extends ApiSpec with Protocol {
       }
     }
 
-    s"return HTTP-$NotFound for non existing movie/screen combination" in {
+    s"respond with HTTP-$NotFound for a non existing movie/screen combination" in {
       val notExistingId = movieInfo().movieIdentification
       Get(generalUrl(notExistingId)) ~> httpService.routes ~> check {
         status shouldBe NotFound
