@@ -2,9 +2,9 @@ package com.oef.movies.services.dao
 
 import com.oef.movies.models.{ MovieIdentification, MovieInformation }
 import com.oef.movies.services.dao.MoviesDaoDefinitions.MoviesDaoImpl
+import com.oef.movies.utils.ActorContext
 import slick.lifted.ProvenShape
-
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.Future
 
 private[services] trait MoviesDao {
 
@@ -16,7 +16,7 @@ private[services] trait MoviesDao {
 }
 
 object MoviesDao {
-  def apply()(implicit executionContext: ExecutionContext): MoviesDao = new MoviesDaoImpl()
+  def apply(): MoviesDao = new MoviesDaoImpl()
 }
 
 private[dao] object MoviesDaoDefinitions extends SlickDAO[MovieInformation, MovieInformation] {
@@ -47,7 +47,7 @@ private[dao] object MoviesDaoDefinitions extends SlickDAO[MovieInformation, Movi
 
   }
 
-  class MoviesDaoImpl(implicit executionContext: ExecutionContext) extends MoviesDao {
+  class MoviesDaoImpl extends MoviesDao with ActorContext {
     override def create(movieInformation: MovieInformation): Future[Unit] = {
       db.run(query += movieInformation).map(_ => ())
     }

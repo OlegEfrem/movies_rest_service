@@ -3,12 +3,29 @@ package com.oef.movies.http
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ HttpEntity, MediaTypes }
 import com.oef.movies.ApiSpec
+import com.oef.movies.http.routes.MovieRoutes
 import com.oef.movies.models.{ MovieIdentification, MovieInformation, MovieRegistration }
+import com.oef.movies.services.MovieServiceImpl
+import com.oef.movies.services.dao.MoviesDao
+import com.oef.movies.services.external.ImdbService
 import com.oef.movies.utils.Protocol
 import spray.json._
 
+import scala.concurrent.Future
+
 class HttpServiceTest extends ApiSpec with Protocol {
-  val httpService = HttpService()
+  // scalastyle:off
+  val httpService = new HttpService(
+    new MovieRoutes(
+      new MovieServiceImpl(
+        MoviesDao(),
+        new ImdbService {
+          override def movieTitleById(imdbId: String) = Future.successful("Some Movie Title")
+        }
+      )
+    )
+  )
+  // scalastyle:on
 
   import TestData._
 

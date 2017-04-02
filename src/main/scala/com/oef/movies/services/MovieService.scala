@@ -2,9 +2,11 @@ package com.oef.movies.services
 
 import com.oef.movies.models._
 import com.oef.movies.services.dao.MoviesDao
+import com.oef.movies.services.external.ImdbService
+import com.oef.movies.utils.ActorContext
 import org.postgresql.util.PSQLException
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.Future
 
 trait MovieService {
 
@@ -17,10 +19,10 @@ trait MovieService {
 }
 
 object MovieService {
-  def apply()(implicit executionContext: ExecutionContext): MovieService = new MovieServiceImpl(MoviesDao(), ImdbService())
+  def apply(): MovieService = new MovieServiceImpl(MoviesDao(), ImdbService())
 }
 
-class MovieServiceImpl(dao: MoviesDao, imdbService: ImdbService)(implicit executionContext: ExecutionContext) extends MovieService {
+class MovieServiceImpl(dao: MoviesDao, imdbService: ImdbService) extends MovieService with ActorContext {
 
   override def save(movieRegistration: MovieRegistration): Future[RegistrationResult.Value] = {
     val saveResult =

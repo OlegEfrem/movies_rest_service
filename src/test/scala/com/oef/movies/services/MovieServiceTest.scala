@@ -3,8 +3,8 @@ package com.oef.movies.services
 import com.oef.movies.UnitSpec
 import com.oef.movies.models.{ RegistrationResult, ReservationResult }
 import com.oef.movies.services.dao.MoviesDao
+import com.oef.movies.services.external.ImdbService
 import org.postgresql.util.{ PSQLException, PSQLState }
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class MovieServiceTest extends UnitSpec {

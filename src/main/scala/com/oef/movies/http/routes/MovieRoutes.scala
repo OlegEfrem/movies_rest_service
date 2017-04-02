@@ -7,9 +7,8 @@ import com.oef.movies.models.{ MovieIdentification, MovieRegistration }
 import com.oef.movies.services.MovieService
 import com.oef.movies.utils.Protocol
 import spray.json._
-import scala.concurrent.ExecutionContext
 
-class MovieRoutes(movieService: MovieService)(implicit executionContext: ExecutionContext) extends Protocol {
+class MovieRoutes(movieService: MovieService) extends Protocol {
 
   val movieRoutes = pathPrefix("movies" / "imdbId" / Segment / "screenId" / Segment) { (imdbId, screentId) =>
     val urlIdentifiers = MovieIdentification(imdbId, screentId)
@@ -60,5 +59,5 @@ class MovieRoutes(movieService: MovieService)(implicit executionContext: Executi
 }
 
 object MovieRoutes {
-  def apply()(implicit executionContext: ExecutionContext): MovieRoutes = new MovieRoutes(MovieService())
+  def apply(): MovieRoutes = new MovieRoutes(MovieService())
 }
