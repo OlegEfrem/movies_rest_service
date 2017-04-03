@@ -1,10 +1,10 @@
 [![Build Status](https://travis-ci.org/OlegEfrem/movies_rest_service.svg?branch=master)](https://travis-ci.org/OlegEfrem/movies_rest_service)
 
 # About
-* This is a Movie Ticket reservation system implementation of the requirements described [here](https://github.com/OlegEfrem/movies_rest_service/blob/master/Assignment.md)
-* It is based on template found [here](https://github.com/ArchDev/akka-http-rest). 
-* Live app is deployed on heroku [here](https://movie-reservation.herokuapp.com/)
-* Sample request/response and issue test calls to live app is on apiary [here](https://app.apiary.io/movieserviceapi/)  
+* This is a Movie Ticket reservation system implementation of the requirements described [here](https://github.com/OlegEfrem/movies_rest_service/blob/master/Assignment.md);
+* It is based on template found [here](https://github.com/ArchDev/akka-http-rest);
+* Live app is deployed on heroku [here](https://movie-reservation.herokuapp.com/);
+* Sample request/response and issue test calls to live app is on apiary [here](http://docs.movieserviceapi.apiary.io). 
 
 # Highlights
 ## Libraries, Frameworks & Plugins
