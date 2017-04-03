@@ -3,7 +3,7 @@
 # About
 * This is a Movie Ticket reservation system implementation of the requirements described [here](https://github.com/OlegEfrem/movies_rest_service/blob/master/Assignment.md);
 * It is based on template found [here](https://github.com/ArchDev/akka-http-rest);
-* Live app is deployed on heroku [here](https://movie-reservation.herokuapp.com/);
+* Live app is deployed on heroku [here](https://movie-reservation.herokuapp.com/v1/movies/imdbId/tt0111161/screenId/screen_123456/);
 * Sample request/response and issue test calls to live app is on apiary [here](http://docs.movieserviceapi.apiary.io). 
 
 # Highlights
