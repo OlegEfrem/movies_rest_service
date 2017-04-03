@@ -1,8 +1,10 @@
 [![Build Status](https://travis-ci.org/OlegEfrem/movies_rest_service.svg?branch=master)](https://travis-ci.org/OlegEfrem/movies_rest_service)
 
 # About
-This is a Movie Ticket reservation system implementation of the requirements described [here](https://github.com/OlegEfrem/movies_rest_service/blob/master/Assignment.md)
-It is based on template found [here](https://github.com/ArchDev/akka-http-rest). 
+* This is a Movie Ticket reservation system implementation of the requirements described [here](https://github.com/OlegEfrem/movies_rest_service/blob/master/Assignment.md)
+* It is based on template found [here](https://github.com/ArchDev/akka-http-rest). 
+* Live app is deployed on heroku [here](https://movie-reservation.herokuapp.com/)
+* Sample request/response and issue test calls to live app is on apiary [here](https://app.apiary.io/movieserviceapi/)  
 
 # Highlights
 ## Libraries, Frameworks & Plugins
@@ -76,9 +78,6 @@ figuring out the [akkaGet](https://github.com/OlegEfrem/movies_rest_service/blob
 * If the service responds with a non error json, movie title along with input registration data is saved to the db, other wise the error json is saved as movie title in the db containing the error code and message returned by the 
 upstream server in the body as json response;
 
-## Sample request/responses
-Can be found documented [here](https://app.apiary.io/movieserviceapi/)
-
 # Run Requirements
 * This is a scala sbt project, and was developed and tested to run with: Java 1.8, Scala 2.12.1 and Sbt 0.13.8
 * Production db is PostgreSQL;
@@ -104,8 +103,3 @@ If you wanna restart your application without reloading of sbt, use:
 ```
 sbt re-start
 ```
-
-## Live example
-Application deployed on heroku and can be accessed by URL [here](https://movie-reservation.herokuapp.com/). First request can take some time, because heroku launch up project.
-
-You can see documentation for this example on [Apiary](http://docs.movieserviceapi.apiary.io).
