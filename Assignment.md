@@ -8,11 +8,11 @@ Implement a ticket reservation system for movies. The interactions with the syst
 
 System should accept a json with following structure to be able to register a movie before any reservation can happen.
 ```json
-    {
-        "imdbId": "tt0111161",
-        "availableSeats": 100,
-        "screenId": "screen_123456"
-    }    
+  {
+    "imdbId": "tt0111161",
+    "availableSeats": 100,
+    "screenId": "screen_123456"
+  }    
 ```
 
 
@@ -26,10 +26,10 @@ Where:
 
 System should allow to reserve a seat for the movie. It should consume a request with following json to reserve a single seat for the movie.
 ```json
-    {
-        "imdbId": "tt0111161",
-        "screenId": "screen_123456"
-    }    
+  {
+    "imdbId": "tt0111161",
+    "screenId": "screen_123456"
+  }    
 ```
 
 Where:
@@ -42,13 +42,13 @@ Where:
 System should allow to see how many seats are reserved for a movie as well as the movie title.
 It should consume a request with `imdbId` and `screenId` and return following response:
 ```json
-    {
-        "imdbId": "tt0111161",
-        "screenId": "screen_123456",
-        "movieTitle": "The Shawshank Redemption",
-        "availableSeats": 100,
-        "reservedSeats": 50
-    }    
+  {
+    "imdbId": "tt0111161",
+    "screenId": "screen_123456",
+    "movieTitle": "The Shawshank Redemption",
+    "availableSeats": 100,
+    "reservedSeats": 50
+  }    
 ```
 
 Where:
