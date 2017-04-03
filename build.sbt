@@ -1,3 +1,4 @@
+
 name := "movies"
 
 organization := "com.oef"
@@ -32,6 +33,11 @@ libraryDependencies ++= {
 }
 
 lazy val root = project.in(file(".")).configs(IntegrationTest)
+Defaults.itSettings
+
+Revolver.settings
+
+enablePlugins(JavaAppPackaging)
 
 // run scalastyle at compile time
 lazy val compileScalastyle = taskKey[Unit]("compileScalastyle")
