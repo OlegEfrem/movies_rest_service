@@ -47,7 +47,7 @@ compileScalastyle := org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).
 (compile in Compile) <<= (compile in Compile) dependsOn compileScalastyle
 
 // code coverage configuration
-coverageEnabled := true
+coverageEnabled := false
 
 coverageHighlighting := true
 
