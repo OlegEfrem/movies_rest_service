@@ -5,7 +5,7 @@ import com.oef.movies.http.routes.MovieRoutes
 
 class HttpService(movieRoutes: MovieRoutes) extends RejectionHandling {
   val routes =
-    handleRejections(myRejectionHandler) {
+    handleRejections(customRejectionHandler) {
       pathPrefix("v1") {
         movieRoutes.movieRoutes
       }

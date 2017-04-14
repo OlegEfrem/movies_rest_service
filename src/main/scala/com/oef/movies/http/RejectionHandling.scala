@@ -6,7 +6,7 @@ import akka.http.scaladsl.server._
 
 trait RejectionHandling {
 
-  def myRejectionHandler: RejectionHandler =
+  def customRejectionHandler: RejectionHandler =
     RejectionHandler.newBuilder()
       .handle {
         case ValidationRejection(msg, _) =>

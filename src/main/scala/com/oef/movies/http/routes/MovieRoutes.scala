@@ -2,11 +2,10 @@ package com.oef.movies.http.routes
 
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{ Directive0, StandardRoute }
+import akka.http.scaladsl.server.{ Directive0, Route }
 import com.oef.movies.models.{ MovieIdentification, MovieRegistration }
 import com.oef.movies.services.MovieService
 import com.oef.movies.utils.Protocol
-import spray.json._
 
 class MovieRoutes(movieService: MovieService) extends Protocol {
 
@@ -15,40 +14,52 @@ class MovieRoutes(movieService: MovieService) extends Protocol {
     pathEndOrSingleSlash {
       put { //Register a movie
         entity(as[MovieRegistration]) { movieRegistration =>
-          validateEquals(urlIdentifiers, MovieIdentification(movieRegistration.imdbId, movieRegistration.screenId)) {
-            val saveResult = movieService.save(movieRegistration)
-            import com.oef.movies.models.RegistrationResult._
-            onSuccess(saveResult) {
-              case RegitrationSuccessful => complete("movie registered")
-              case AlreadyExists => complete(Conflict, "movie already exists")
-            }
-          }
+          registerMovie(movieRegistration, urlIdentifiers)
         }
       } ~
         patch { //Reserve a seat at the movie
           entity(as[MovieIdentification]) { movieIdentification =>
-            validateEquals(urlIdentifiers, movieIdentification) {
-              val reservationResult = movieService.reserve(movieIdentification)
-              import com.oef.movies.models.ReservationResult._
-              onSuccess(reservationResult) {
-                case ReservationSuccessful => complete("seat reserved")
-                case NoSeatsLeft => complete(Conflict, "no seats left")
-                case NoSuchMovie => notFound(movieIdentification)
-              }
-            }
+            reserveSeat(movieIdentification, urlIdentifiers)
           }
         } ~
         get { //Retrieve information about the movie
-          val movieInfo = movieService.read(urlIdentifiers)
-          onSuccess(movieInfo) {
-            case Some(x) => complete(x.toJson)
-            case None => notFound(urlIdentifiers)
-          }
+          retrieveMovie(urlIdentifiers)
         }
     }
   }
 
-  private def notFound(movieIdentification: MovieIdentification): StandardRoute = {
+  private def registerMovie(movieRegistration: MovieRegistration, urlIdentifiers: MovieIdentification): Route = {
+    validateEquals(urlIdentifiers, movieRegistration.movieIdentification) {
+      val saveResult = movieService.save(movieRegistration)
+      import com.oef.movies.models.RegistrationResult._
+      onSuccess(saveResult) {
+        case RegitrationSuccessful => complete("movie registered")
+        case AlreadyExists => complete(Conflict, "movie already exists")
+      }
+    }
+  }
+
+  private def reserveSeat(movieIdentification: MovieIdentification, urlIdentifiers: MovieIdentification): Route = {
+    validateEquals(urlIdentifiers, movieIdentification) {
+      val reservationResult = movieService.reserve(movieIdentification)
+      import com.oef.movies.models.ReservationResult._
+      onSuccess(reservationResult) {
+        case ReservationSuccessful => complete("seat reserved")
+        case NoSeatsLeft => complete(Conflict, "no seats left")
+        case NoSuchMovie => notFound(movieIdentification)
+      }
+    }
+  }
+
+  private def retrieveMovie(urlIdentifiers: MovieIdentification): Route = {
+    val movieInfo = movieService.read(urlIdentifiers)
+    onSuccess(movieInfo) {
+      case Some(x) => complete(x)
+      case None => notFound(urlIdentifiers)
+    }
+  }
+
+  private def notFound(movieIdentification: MovieIdentification): Route = {
     complete(NotFound, s"Could not find th movie identified by: $movieIdentification")
   }
 
